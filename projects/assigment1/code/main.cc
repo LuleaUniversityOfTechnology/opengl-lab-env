@@ -5,15 +5,12 @@
 #include "config.h"
 #include "snowflakeapp.h"
 
-int
-main(int argc, const char** argv)
-{
-	Snowflake::SnowflakeApp app;
+int main(int argc, const char** argv) {
+	SnowflakeApp::SnowflakeApp app;
 	if (app.Open())
 	{
 		app.Run();
 		app.Close();
 	}
 	app.Exit();
-	
 }
