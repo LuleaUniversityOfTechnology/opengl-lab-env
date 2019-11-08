@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcore.a  CMakeFiles/core.dir/app.cc.o CMakeFiles/core.dir/__/config.cc.o
+/usr/bin/ranlib libcore.a
