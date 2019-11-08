@@ -60,16 +60,13 @@ namespace Snowflake {
 		float r = (a * sqrt(3))/6;
 		float h = (a * sqrt(3))/2;
 
-		GLfloat* triangle = new GLfloat[21];
+		GLfloat* triangle = new GLfloat[9];
 
 		triangle[0] = cx - a/2;	triangle[1] = cy - r;	triangle[2] = -1; // pos 0
-		triangle[3] = 1;	triangle[4] = 0;	triangle[5] = 0;	triangle[6] = 1; // color 0
 
-		triangle[7] = cx;	triangle[8] = cy + (h - r);	triangle[9] = -1; // pos 1
-		triangle[10] = 0;	triangle[11] = 1;	triangle[12] = 0;	triangle[13] = 1; // color 1
+		triangle[3] = cx;	triangle[4] = cy + (h - r);	triangle[5] = -1; // pos 1
 
-		triangle[14] = cx + a/2;	triangle[15] = cy - r;	triangle[16] = -1; // pos 2
-		triangle[17] = 0;	triangle[18] = 0;	triangle[19] = 1;	triangle[20] = 1; // color 2
+		triangle[6] = cx + a/2;	triangle[7] = cy - r;	triangle[8] = -1; // pos 2
 
 		return triangle;
 	}
@@ -95,22 +92,19 @@ namespace Snowflake {
 		float r = (a * sqrt(3))/6;
 		float h = (a * sqrt(3))/2;
 		
-		GLfloat* triangle = new GLfloat[21];
+		GLfloat* triangle = new GLfloat[9];
 
 		triangle[0] = ps[0] + dx/3;	triangle[1] = ps[1] + dy/3;	triangle[2] = -1; // pos 0
-		triangle[3] = 1;	triangle[4] = 0;	triangle[5] = 0;	triangle[6] = 1; // color 0
 
-		triangle[7] = ps[0] + dx/2 -dy/3;	triangle[8] = ps[1] + dy/2 + dx/3 ;	triangle[9] = -1; // pos 1
-		triangle[10] = 0;	triangle[11] = 1;	triangle[12] = 0;	triangle[13] = 1; // color 1
+		triangle[3] = ps[0] + dx/2 -dy/3;	triangle[4] = ps[1] + dy/2 + dx/3 ;	triangle[5] = -1; // pos 1
 
-		triangle[14] = ps[0] + dx/3 * 2;	triangle[15] = ps[1] + dy/3 * 2;	triangle[16] = -1; // pos 2
-		triangle[17] = 0;	triangle[18] = 0;	triangle[19] = 1;	triangle[20] = 1; // color 2
+		triangle[6] = ps[0] + dx/3 * 2;	triangle[7] = ps[1] + dy/3 * 2;	triangle[8] = -1; // pos 2
 
 		return triangle;
 	}
 
 	GLfloat* SnowflakeApp::calcSnowflake(GLfloat* points, int num_points, int depth) {
-		GLfloat* result = new GLfloat[num_points * 4 * 7];
+		GLfloat* result = new GLfloat[num_points * 4 * 3];
 
 		if (depth > 0) {
 
@@ -118,17 +112,17 @@ namespace Snowflake {
 			GLfloat* newTriangle;
 
 			for (int i = 0; i < num_points ; i++) {
-				edge[0] = points[0 + 7 * i]; edge[1] = points[1 + 7 * i]; edge[2] = points[7 + 7 * i]; edge[3] = points[8 + 7 * i]; 
+				edge[0] = points[0 + 3 * i]; edge[1] = points[1 + 3 * i]; edge[2] = points[3 + 3 * i]; edge[3] = points[4 + 3 * i]; 
 				if (i == num_points - 1) {
-					edge[0] = points[0 + 7 * i]; edge[1] = points[1 + 7 * i]; edge[2] = points[0]; edge[3] = points[1]; 
+					edge[0] = points[0 + 3 * i]; edge[1] = points[1 + 3 * i]; edge[2] = points[0]; edge[3] = points[1]; 
 				}
 				newTriangle  = calcTriangle(edge);
 
-				for (int j = 0; j < 7; j++) {
-					result[j + 28 * i] = points[j + 7 * i]; 
+				for (int j = 0; j < 3; j++) {
+					result[j + 12 * i] = points[j + 3 * i]; 
 				}
-				for (int j = 0; j < 21; j++) {
-					result[j + 28 * i + 7 ] = newTriangle[j]; 
+				for (int j = 0; j < 9; j++) {
+					result[j + 12 * i + 3 ] = newTriangle[j]; 
 				}
 
 				delete[] newTriangle;
@@ -139,7 +133,7 @@ namespace Snowflake {
 
 			return r;
 		} else {
-			for (int i = 0; i < num_points * 7; i++) { 
+			for (int i = 0; i < num_points * 3; i++) { 
 				result[i] = points[i];
 			}
 			return result;
@@ -164,15 +158,22 @@ namespace Snowflake {
 
 		GLfloat buf[this->num_points * 7];
 
-		for (int i = 0; i < this->num_points * 7; i++) {
-			buf[i] = t2_buf[i];
+		for (int i = 0; i < this->num_points; i++) {
+			buf[i * 7] = t2_buf[i * 3];
+			buf[1 + i * 7] = t2_buf[1 + i * 3];
+			buf[2 + i * 7] = t2_buf[2 + i * 3];
+
+			buf[3 + i * 7] = 0;
+			buf[4 + i * 7] = 0;
+			buf[5 + i * 7] = 0;
+			buf[6 + i * 7] = 1;
 		}
 
 		delete[] t2_buf;
 
 		for (int i = 0; i < this->num_points; i++) {
 			translatePoint(&buf[i * 7 + 0], &buf[i * 7 + 1], -pos[0], -pos[1]);
-			rotatePoint(&buf[i * 7 + 0], &buf[i * 7 + 1], 0.5f);
+			rotatePoint(&buf[i * 7 + 0], &buf[i * 7 + 1], 0.0f);
 			translatePoint(&buf[i * 7 + 0], &buf[i * 7 + 1], pos[0], pos[1]);
 		}
 
@@ -197,7 +198,7 @@ namespace Snowflake {
 
 		if (this->window->Open()) {
 			// set clear color to gray
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
 
 			// setup vertex shader
 			this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -263,6 +264,7 @@ namespace Snowflake {
 			this->window->Update();
 
 			// do stuff
+			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 			glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
 			glUseProgram(this->program);
 			glEnableVertexAttribArray(0);
