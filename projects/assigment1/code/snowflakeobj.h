@@ -18,11 +18,17 @@ namespace Snowflake {
         // funcs
             void create();
 
+            float getSize();
+
+            void setSize(float s);
+
             float getPosX();
             float getPosY();
-            float getAngle();
 
             void setPos(float x, float y);
+
+            float getAngle();
+
             void setAngle(float a);
 
             int getDepth();
@@ -35,6 +41,7 @@ namespace Snowflake {
 
 		private:
         // Var
+            float size;
             float posx;
             float posy;
             float angle;

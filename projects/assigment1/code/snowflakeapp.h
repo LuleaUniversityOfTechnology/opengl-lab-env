@@ -27,7 +27,10 @@ namespace SnowflakeApp {
 			GLuint vertexShader;
 			GLuint pixelShader;
 			GLuint triangle;
+			GLuint vertex;
 			Display::Window* window;
+
+			void updateBuffer();
 
 			Snowflake::SnowflakeObj snowFlake;
 	};

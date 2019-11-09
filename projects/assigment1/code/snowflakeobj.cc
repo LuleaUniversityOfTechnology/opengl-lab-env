@@ -21,6 +21,7 @@ namespace Snowflake {
 	/**
 	*/
 	SnowflakeObj::SnowflakeObj() {
+		this->size = 1.6f;
 		this->posx = 0.0f;
         this->posy = 0.0f;
         this->angle = 0.0f;
@@ -127,20 +128,20 @@ namespace Snowflake {
 
     void SnowflakeObj::translateSnowflake(float x, float y) {
 		for (int i = 0; i < this->numPoints; i++) {
-			translatePoint(&this->snowFlake[i * 7 + 0], &this->snowFlake[i * 7 + 1], x, y);
+			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], x, y);
 		}
 	}
 
 	void SnowflakeObj::rotateSnowflake(float angle) {
 		for (int i = 0; i < this->numPoints; i++) {
-			translatePoint(&this->snowFlake[i * 7 + 0], &this->snowFlake[i * 7 + 1], -this->posx, -this->posy);
-			rotatePoint(&this->snowFlake[i * 7 + 0], &this->snowFlake[i * 7 + 1], angle);
-			translatePoint(&this->snowFlake[i * 7 + 0], &this->snowFlake[i * 7 + 1], this->posx, this->posy);
+			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], -this->posx, -this->posy);
+			rotatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], angle);
+			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], this->posx, this->posy);
 		}
 	}
 
 	void SnowflakeObj::create(){
-		GLfloat* triangle = createTriangle(0.5f, this->posx, this->posy);
+		GLfloat* triangle = createTriangle(this->size, this->posx, this->posy);
 		GLfloat* points = calcSnowflake(triangle, 3, this->depth);
 		delete[] triangle;
 
@@ -156,6 +157,15 @@ namespace Snowflake {
 		// 	std::cout << this->snowFlake[i * 3 + 2];
 		// 	std::cout << "\n";
 		// }
+	}
+
+	float SnowflakeObj::getSize() {
+		return this->size;
+	}
+
+	void SnowflakeObj::setSize(float s) {
+		this->size = s;
+		create();
 	}
 
     float SnowflakeObj::getPosX() {
