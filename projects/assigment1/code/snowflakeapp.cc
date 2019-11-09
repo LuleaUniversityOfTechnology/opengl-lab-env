@@ -17,6 +17,8 @@
 #include <math.h>
 #include <iostream>
 
+#include <sstream>
+
 const GLchar* vs =
 	"#version 310 es\n"
 	"precision mediump float;\n"
@@ -233,6 +235,7 @@ namespace Snowflake {
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_QUADS, this->snowFlake.getNumPoints() * 2, 8);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 			this->window->SwapBuffers();
 		}

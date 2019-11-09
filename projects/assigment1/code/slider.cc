@@ -49,6 +49,7 @@ namespace Snowflake {
 				if (this->wasPressed) {
 					this->newValue = true;
 					this->wasPressed = false;
+                    calcVertex();
 				}
 			}
 		});
@@ -62,7 +63,7 @@ namespace Snowflake {
             
             if (rx > this->posx - dx/2 && rx < this->posx + dx/2) {
                 if (ry > -this->posy && ry < -this->posy + dy) {
-                    this->value = round(((rx - (this->posx - dx/2))/this->size))  + min;
+                    this->value = ((int)round(((rx - (this->posx - dx/2))/this->size))) % max + min;
                 }
             }
 		});
@@ -119,7 +120,6 @@ namespace Snowflake {
 
     int Slider::getValue() {
         this->newValue = false;
-        calcVertex();
         return this->value;
     }
 
