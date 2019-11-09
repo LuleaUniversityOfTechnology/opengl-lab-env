@@ -26,7 +26,6 @@ namespace SnowflakeApp {
 			GLuint program;
 			GLuint vertexShader;
 			GLuint pixelShader;
-			GLuint triangle;
 			GLuint vertex;
 			Display::Window* window;
 

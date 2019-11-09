@@ -66,19 +66,7 @@ namespace SnowflakeApp {
 		});
 
 		this->snowFlake.setDepth(7);
-		GLfloat* t_buf = this->snowFlake.getSnowFlake();
-		GLfloat buf[this->snowFlake.getNumPoints() * 7];
-
-		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
-			buf[i * 7] = t_buf[i * 3];
-			buf[1 + i * 7] = t_buf[1 + i * 3];
-			buf[2 + i * 7] = t_buf[2 + i * 3];
-
-			buf[3 + i * 7] = 0;
-			buf[4 + i * 7] = 0;
-			buf[5 + i * 7] = 0;
-			buf[6 + i * 7] = 1;
-		}
+		
 
 		if (this->window->Open()) {
 			// set clear color to gray
@@ -129,10 +117,8 @@ namespace SnowflakeApp {
 				delete[] buf;
 			}
 
-			glGenBuffers(1, &this->triangle);
-			glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(buf), buf, GL_STATIC_DRAW);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glGenBuffers(1, &this->vertex);
+			updateBuffer();
 
 			return true;
 		}
@@ -141,13 +127,16 @@ namespace SnowflakeApp {
 
 	void SnowflakeApp::updateBuffer() {
 		this->snowFlake.setAngle(this->snowFlake.getAngle() + 0.001f);
-		GLfloat* t_buf = this->snowFlake.getSnowFlake();
-		GLfloat buf[this->snowFlake.getNumPoints() * 7];
+		GLfloat* t_buf1 = this->snowFlake.getSnowFlake();
+		GLfloat* t_buf2 = this->snowFlake.calcTriangleSnowflake(t_buf1, this->snowFlake.getDepth());
+
+		int numFloats = this->snowFlake.getNumPoints() * 7;
+		GLfloat buf[numFloats * 2];
 
 		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
-			buf[i * 7] = t_buf[i * 3];
-			buf[1 + i * 7] = t_buf[1 + i * 3];
-			buf[2 + i * 7] = t_buf[2 + i * 3];
+			buf[i * 7] = t_buf2[i * 3];
+			buf[1 + i * 7] = t_buf2[1 + i * 3];
+			buf[2 + i * 7] = t_buf2[2 + i * 3];
 
 			buf[3 + i * 7] = 1;
 			buf[4 + i * 7] = 0;
@@ -155,7 +144,20 @@ namespace SnowflakeApp {
 			buf[6 + i * 7] = 1;
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
+		delete[] t_buf2;
+
+		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
+			buf[i * 7 + numFloats] = t_buf1[i * 3];
+			buf[1 + i * 7 + numFloats] = t_buf1[1 + i * 3];
+			buf[2 + i * 7 + numFloats] = t_buf1[2 + i * 3];
+
+			buf[3 + i * 7 + numFloats] = 0;
+			buf[4 + i * 7 + numFloats] = 0;
+			buf[5 + i * 7 + numFloats] = 0;
+			buf[6 + i * 7 + numFloats] = 1;
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
 		glClearBufferData(GL_ARRAY_BUFFER, GL_R32F, GL_RED, GL_FLOAT, buf);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(buf), buf, GL_STATIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -173,25 +175,27 @@ namespace SnowflakeApp {
 			this->window->Update();
 
 			// do stuff
+			
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
+			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
 			glUseProgram(this->program);
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
-			glDrawArrays(GL_LINE_LOOP, 0, this->snowFlake.getNumPoints());
+			glDrawArrays(GL_TRIANGLES, 0, this->snowFlake.getNumPoints());
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-			// glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			// glBindBuffer(GL_ARRAY_BUFFER, this->ver);
-			// glUseProgram(this->program);
-			// glEnableVertexAttribArray(0);
-			// glEnableVertexAttribArray(1);
-			// glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
-			// glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
-			// glDrawArrays(GL_LINE_LOOP, 0, this->snowFlake.getNumPoints());
-			// glBindBuffer(GL_ARRAY_BUFFER, 0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glLineWidth(4);
+			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
+			glUseProgram(this->program);
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
+			glDrawArrays(GL_POLYGON, this->snowFlake.getNumPoints(), this->snowFlake.getNumPoints());
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			this->window->SwapBuffers();
 		}

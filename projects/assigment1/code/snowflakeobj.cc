@@ -157,7 +157,56 @@ namespace Snowflake {
 		// 	std::cout << this->snowFlake[i * 3 + 2];
 		// 	std::cout << "\n";
 		// }
+		// std::cout << "\n";
 	}
+
+	GLfloat* SnowflakeObj::calcTriangleSnowflake(GLfloat* points, int depth) {
+		int numFloats = 3 * pow(4, depth) * 3;
+		GLfloat* triangleSnowflake = new GLfloat[numFloats];
+		for (int i = 0; i < numFloats; i++) {
+			triangleSnowflake[i] = 0;
+		}
+
+		if (depth > 0) {
+			int prevNumPoints = 3 * pow(4, depth - 1);
+
+			for (int i = 0; i < prevNumPoints; i++) {
+				triangleSnowflake[0 + i * 9] = points[0 + i * 9 + (i+1) * 3];
+				triangleSnowflake[1 + i * 9] = points[1 + i * 9 + (i+1) * 3];
+				triangleSnowflake[2 + i * 9] = points[2 + i * 9 + (i+1) * 3];
+
+				triangleSnowflake[3 + i * 9] = points[3 + i * 9 + (i+1) * 3];
+				triangleSnowflake[4 + i * 9] = points[4 + i * 9 + (i+1) * 3];
+				triangleSnowflake[5 + i * 9] = points[5 + i * 9 + (i+1) * 3];
+
+				triangleSnowflake[6 + i * 9] = points[6 + i * 9 + (i+1) * 3];
+				triangleSnowflake[7 + i * 9] = points[7 + i * 9 + (i+1) * 3];
+				triangleSnowflake[8 + i * 9] = points[8 + i * 9 + (i+1) * 3];
+			}
+
+			GLfloat temp[prevNumPoints * 3];
+			for (int i = 0; i < prevNumPoints; i++) {
+				temp[0 + i * 3] = points[0 + i * 12];
+				temp[1 + i * 3] = points[1 + i * 12];
+				temp[2 + i * 3] = points[2 + i * 12];
+			}
+			GLfloat* newTriangleSnowflake = calcTriangleSnowflake(temp, depth - 1);
+
+			for (int i = 0; i < prevNumPoints * 3; i++) {
+				triangleSnowflake[i + prevNumPoints * 9] = newTriangleSnowflake[i];
+			}
+
+			delete[] newTriangleSnowflake;
+
+			return triangleSnowflake;
+		} else {
+			for (int i = 0; i < numFloats; i++) {
+				triangleSnowflake[i] = points[i];
+			}
+			return triangleSnowflake;
+		}
+	}
+
 
 	float SnowflakeObj::getSize() {
 		return this->size;

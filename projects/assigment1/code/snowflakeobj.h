@@ -18,6 +18,8 @@ namespace Snowflake {
         // funcs
             void create();
 
+            GLfloat* calcTriangleSnowflake(GLfloat* points, int depth);
+
             float getSize();
 
             void setSize(float s);
