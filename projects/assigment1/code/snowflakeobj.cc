@@ -21,7 +21,7 @@ namespace Snowflake {
 	/**
 	*/
 	SnowflakeObj::SnowflakeObj() {
-		this->size = 1.6f;
+		this->size = 1.5f;
 		this->posx = 0.0f;
         this->posy = 0.0f;
         this->angle = 0.0f;
@@ -213,8 +213,10 @@ namespace Snowflake {
 	}
 
 	void SnowflakeObj::setSize(float s) {
-		this->size = s;
-		create();
+		if (this->size != s) {
+			this->size = s;
+			create();
+		}
 	}
 
     float SnowflakeObj::getPosX() {
@@ -229,16 +231,20 @@ namespace Snowflake {
     }
 
     void SnowflakeObj::setPos(float x, float y) {
-		translateSnowflake(this->posx, this->posy);
-        this->posx = x;
-        this->posy = y;
-		translateSnowflake(this->posx, this->posy);
+		if (this->posx  != x || this->posy != y) {
+			translateSnowflake(this->posx, this->posy);
+			this->posx = x;
+			this->posy = y;
+			translateSnowflake(this->posx, this->posy);
+		}
     }
 
     void SnowflakeObj::setAngle(float a) {
-		rotateSnowflake(-this->angle);
-        this->angle = a;
-		rotateSnowflake(this->angle);
+		if (this->angle != a) {
+			rotateSnowflake(-this->angle);
+			this->angle = a;
+			rotateSnowflake(this->angle);
+		}
     }
 
     int SnowflakeObj::getDepth() {
@@ -246,10 +252,12 @@ namespace Snowflake {
     }
 
     void SnowflakeObj::setDepth(int d) {
-        this->depth = d;
-        this->numPoints = 3 * pow(4, this->depth);
+		if (this->depth != d) {
+			this->depth = d;
+			this->numPoints = 3 * pow(4, this->depth);
 
-		create();
+			create();
+		}
     }
 
     int SnowflakeObj::getNumPoints() {

@@ -3,8 +3,11 @@
 // (C) 2015-2017 Individual contributors, see AUTHORS file
 //------------------------------------------------------------------------------
 #include "config.h"
+
 #include "snowflakeapp.h"
 #include "snowflakeobj.h"
+#include "slider.h"
+
 #include <cstring>
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp> // glm::vec3
@@ -37,7 +40,7 @@ const GLchar* ps =
 	"}\n";
 
 using namespace Display;
-namespace SnowflakeApp {
+namespace Snowflake {
 
 	//------------------------------------------------------------------------------
 	/**
@@ -65,8 +68,10 @@ namespace SnowflakeApp {
 			this->window->Close();
 		});
 
-		this->snowFlake.setDepth(7);
-		
+		this->slider = new Slider(this->window, 0, 7, 0, -0.94f, 0.1f);
+
+		this->snowFlake.setDepth(this->slider->getValue());
+
 
 		if (this->window->Open()) {
 			// set clear color to gray
@@ -127,11 +132,14 @@ namespace SnowflakeApp {
 
 	void SnowflakeApp::updateBuffer() {
 		this->snowFlake.setAngle(this->snowFlake.getAngle() + 0.001f);
+		if (this->slider->getNewValue()) {
+			this->snowFlake.setDepth(this->slider->getValue());
+		}
 		GLfloat* t_buf1 = this->snowFlake.getSnowFlake();
 		GLfloat* t_buf2 = this->snowFlake.calcTriangleSnowflake(t_buf1, this->snowFlake.getDepth());
 
 		int numFloats = this->snowFlake.getNumPoints() * 7;
-		GLfloat buf[numFloats * 2];
+		GLfloat buf[numFloats * 2 + 56];
 
 		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
 			buf[i * 7] = t_buf2[i * 3];
@@ -157,6 +165,23 @@ namespace SnowflakeApp {
 			buf[6 + i * 7 + numFloats] = 1;
 		}
 
+		GLfloat* t_buf3 = this->slider->getSliderVertex();
+		int blue = 1;
+		for (int i = 0; i < 8; i++) {
+			buf[i * 7 + numFloats * 2] = t_buf3[i * 3];
+			buf[1 + i * 7 + numFloats * 2] = t_buf3[1 + i * 3];
+			buf[2 + i * 7 + numFloats * 2] = t_buf3[2 + i * 3];
+
+			if (i > 3){
+				blue = 0;
+			}
+
+			buf[3 + i * 7 + numFloats * 2] = 0;
+			buf[4 + i * 7 + numFloats * 2] = 0;
+			buf[5 + i * 7 + numFloats * 2] = blue;
+			buf[6 + i * 7 + numFloats * 2] = 1;
+		}
+
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
 		glClearBufferData(GL_ARRAY_BUFFER, GL_R32F, GL_RED, GL_FLOAT, buf);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(buf), buf, GL_STATIC_DRAW);
@@ -169,10 +194,11 @@ namespace SnowflakeApp {
 	*/
 	void SnowflakeApp::Run() {
 		while (this->window->IsOpen()) {
-			updateBuffer();
 
 			glClear(GL_COLOR_BUFFER_BIT);
 			this->window->Update();
+
+			updateBuffer();
 
 			// do stuff
 			
@@ -197,8 +223,19 @@ namespace SnowflakeApp {
 			glDrawArrays(GL_POLYGON, this->snowFlake.getNumPoints(), this->snowFlake.getNumPoints());
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glLineWidth(4);
+			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
+			glUseProgram(this->program);
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
+			glDrawArrays(GL_QUADS, this->snowFlake.getNumPoints() * 2, 8);
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 			this->window->SwapBuffers();
 		}
 	}
 
-} // namespace SnowflakeApp
+} // namespace Snowflake

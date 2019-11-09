@@ -9,7 +9,9 @@
 #include "core/app.h"
 #include "render/window.h"
 #include "snowflakeobj.h"
-namespace SnowflakeApp {
+#include "slider.h"
+
+namespace Snowflake {
 	class SnowflakeApp : public Core::App {
 		public:
 			/// constructor
@@ -22,6 +24,7 @@ namespace SnowflakeApp {
 			/// run app
 			void Run();
 		private:
+			Slider* slider;
 
 			GLuint program;
 			GLuint vertexShader;
@@ -33,4 +36,4 @@ namespace SnowflakeApp {
 
 			Snowflake::SnowflakeObj snowFlake;
 	};
-} // namespace SnowflakeApp
+} // namespace Snowflake

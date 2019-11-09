@@ -6,7 +6,7 @@
 #include "snowflakeapp.h"
 
 int main(int argc, const char** argv) {
-	SnowflakeApp::SnowflakeApp app;
+	Snowflake::SnowflakeApp app;
 	if (app.Open())
 	{
 		app.Run();
