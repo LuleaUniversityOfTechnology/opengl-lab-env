@@ -55,7 +55,7 @@ namespace Snowflake {
 		});
 
 		window->SetMouseMoveFunction([this](float64 x, float64 y) {
-            float dx = this->size * (this->max - this->min);
+            float dx = this->size * (this->max  + 1);
             float dy = this->size;
             float rx = (x)/500 - 1;
             float ry = (y)/500 - 1;
@@ -63,7 +63,11 @@ namespace Snowflake {
             
             if (rx > this->posx - dx/2 && rx < this->posx + dx/2) {
                 if (ry > -this->posy && ry < -this->posy + dy) {
-                    this->value = ((int)round(((rx - (this->posx - dx/2))/this->size))) % max + min;
+                    int v = ((int)round(( (rx - (this->posx - dx/2))/this->size)));
+                    if (v > max) {
+                        v = max;
+                    }
+                    this->value = v;
                 }
             }
 		});
@@ -74,7 +78,7 @@ namespace Snowflake {
 
         GLfloat* sliderVertexs = new GLfloat[24];
 
-        float dx = this->size * (this->max - this->min);
+        float dx = this->size * (this->max + 1);
         float dy = this->size;
         float size = this->size;
         int value = this->value;
@@ -120,7 +124,7 @@ namespace Snowflake {
 
     int Slider::getValue() {
         this->newValue = false;
-        return this->value;
+        return this->value + min;
     }
 
     GLfloat* Slider::getSliderVertex() {
