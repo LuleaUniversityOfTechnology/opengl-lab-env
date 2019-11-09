@@ -21,7 +21,7 @@ namespace Snowflake {
 	/**
 	*/
 	SnowflakeObj::SnowflakeObj() {
-		this->size = 1.5f;
+		this->size = 1.3f;
 		this->posx = 0.0f;
         this->posy = 0.0f;
         this->angle = 0.0f;

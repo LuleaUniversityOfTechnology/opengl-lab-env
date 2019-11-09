@@ -70,7 +70,7 @@ namespace Snowflake {
 			this->window->Close();
 		});
 
-		this->slider = new Slider(this->window, 0, 7, 0, -0.94f, 0.1f);
+		this->slider = new Slider(this->window, 0, 6, 0, -0.94f, 0.1f);
 
 		this->snowFlake.setDepth(this->slider->getValue());
 
