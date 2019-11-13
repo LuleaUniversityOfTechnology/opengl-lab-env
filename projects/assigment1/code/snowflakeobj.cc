@@ -73,7 +73,7 @@ namespace Snowflake {
 
 		triangle[0] = ps[0] + dx/3;	triangle[1] = ps[1] + dy/3;	triangle[2] = -1; // pos 0
 
-		triangle[3] = ps[0] + dx/2 -dy/3;	triangle[4] = ps[1] + dy/2 + dx/3 ;	triangle[5] = -1; // pos 1
+		triangle[3] = ps[0] + dx/2 + (((-dy/3) * sqrt(3))/2);	triangle[4] = ps[1] + dy/2 + (((dx/3) * sqrt(3))/2) ;	triangle[5] = -1; // pos 1
 
 		triangle[6] = ps[0] + dx/3 * 2;	triangle[7] = ps[1] + dy/3 * 2;	triangle[8] = -1; // pos 2
 
