@@ -16,6 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <math.h>
 #include <iostream>
+#include <math.h>
 
 #include <sstream>
 
@@ -25,9 +26,10 @@ const GLchar* vs =
 	"layout(location=0) in vec3 pos;\n"
 	"layout(location=1) in vec4 color;\n"
 	"layout(location=0) out vec4 Color;\n"
+	"uniform mat4 rotate;\n"
 	"void main()\n"
 	"{\n"
-	"	gl_Position = vec4(pos, 1);\n"
+	"	gl_Position = vec4(pos, 1) * rotate;\n"
 	"	Color = color;\n"
 	"}\n";
 
@@ -203,34 +205,60 @@ namespace Snowflake {
 			updateBuffer();
 
 			// do stuff
-			
+
+			GLfloat matrix[] = {
+				1.0f,	0,		0,		0,
+				0,		1.0f,	0,		0,
+				0,		0,		1.0f,	0,
+				0,		0,		0,		1.0f
+			};
+
+			float angle = this->snowFlake.getAngle();
+			GLfloat rotate[] = {
+				cos(angle * M_PI),		-sin(angle * M_PI),		0,		0,
+				sin(angle * M_PI),		cos(angle * M_PI),		0,		0,
+				0,						0,						1.0f,	0,
+				0,						0,						0,		1.0f
+			};
+			// *px = x * cos(angle * M_PI) - y * sin(angle * M_PI);
+			// *py = x * sin(angle * M_PI) + y * cos(angle * M_PI);
+
+
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
 			glUseProgram(this->program);
 			glEnableVertexAttribArray(0);
 			glEnableVertexAttribArray(1);
+
+			GLuint MatrixID = glGetUniformLocation(this->program, "rotate");
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, rotate);
+
+			
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_TRIANGLES, 0, this->snowFlake.getNumPoints());
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			// glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glLineWidth(4);
-			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
-			glUseProgram(this->program);
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
+			// glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
+			// glUseProgram(this->program);
+			// glEnableVertexAttribArray(0);
+			// glEnableVertexAttribArray(1);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_POLYGON, this->snowFlake.getNumPoints(), this->snowFlake.getNumPoints());
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			// glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glLineWidth(4);
-			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
-			glUseProgram(this->program);
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
+
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, matrix);
+
+			// glLineWidth(4);
+			// glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
+			// glUseProgram(this->program);
+			// glEnableVertexAttribArray(0);
+			// glEnableVertexAttribArray(1);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_QUADS, this->snowFlake.getNumPoints() * 2, 8);
