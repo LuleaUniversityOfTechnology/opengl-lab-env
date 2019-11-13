@@ -18,16 +18,9 @@ namespace Snowflake {
         // funcs
             void create();
 
-            GLfloat* calcTriangleSnowflake(GLfloat* points, int depth);
-
             float getSize();
 
             void setSize(float s);
-
-            float getPosX();
-            float getPosY();
-
-            void setPos(float x, float y);
 
             float getAngle();
 
@@ -46,8 +39,6 @@ namespace Snowflake {
 		private:
         // Var
             float size;
-            float posx;
-            float posy;
             float angle;
 
 			int depth;
@@ -58,19 +49,11 @@ namespace Snowflake {
             int pos;
 
         // Funcs
-            GLfloat* createTriangle(GLfloat a, GLfloat cx, GLfloat cy);
+            GLfloat* createTriangle(GLfloat a);
 
 			GLfloat* calcTriangle(GLfloat ps[4]);
 
 			GLfloat* calcSnowflake(GLfloat* triangle, int num_points, int depth);
-
-            void translatePoint(GLfloat* px, GLfloat* py, GLfloat tx, GLfloat ty);
-
-			void rotatePoint(GLfloat* px, GLfloat* py, float angle);
-
-            void translateSnowflake(float x, float y);
-
-            void rotateSnowflake(float angle);
 
 	};
 } // namespace Snowflake
