@@ -123,33 +123,33 @@ namespace Snowflake {
 	}
 
     void SnowflakeObj::translatePoint(GLfloat* px, GLfloat* py, GLfloat tx, GLfloat ty) {
-		*px += tx;
-		*py += ty;
+		// *px += tx;
+		// *py += ty;
 	}
 
 	void SnowflakeObj::rotatePoint(GLfloat* px, GLfloat* py, float angle) {
-		GLfloat x = *px;
-		GLfloat y = *py;
-		*px = x * cos(angle * M_PI) - y * sin(angle * M_PI);
-		*py = x * sin(angle * M_PI) + y * cos(angle * M_PI);
+		// GLfloat x = *px;
+		// GLfloat y = *py;
+		// *px = x * cos(angle * M_PI) - y * sin(angle * M_PI);
+		// *py = x * sin(angle * M_PI) + y * cos(angle * M_PI);
 	}
 
     void SnowflakeObj::translateSnowflake(float x, float y) {
-		for (int i = 0; i < this->numPoints; i++) {
-			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], x, y);
-		}
+		// for (int i = 0; i < this->numPoints; i++) {
+		// 	translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], x, y);
+		// }
 	}
 
 	void SnowflakeObj::rotateSnowflake(float angle) {
-		for (int i = 0; i < this->numPoints; i++) {
-			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], -this->posx, -this->posy);
-			rotatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], angle);
-			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], this->posx, this->posy);
+		// for (int i = 0; i < this->numPoints; i++) {
+		// 	translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], -this->posx, -this->posy);
+		// 	rotatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], angle);
+		// 	translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], this->posx, this->posy);
 
-			translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], -this->posx, -this->posy);
-			rotatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], angle);
-			translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], this->posx, this->posy);
-		}
+		// 	translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], -this->posx, -this->posy);
+		// 	rotatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], angle);
+		// 	translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], this->posx, this->posy);
+		// }
 	}
 
 	void SnowflakeObj::create(){
