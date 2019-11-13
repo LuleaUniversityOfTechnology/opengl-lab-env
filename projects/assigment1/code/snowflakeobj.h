@@ -41,6 +41,8 @@ namespace Snowflake {
 
             GLfloat* getSnowFlake();
 
+            GLfloat* getTriangleSnowFlake();
+
 		private:
         // Var
             float size;
@@ -52,6 +54,8 @@ namespace Snowflake {
 			int numPoints;
 
             GLfloat* snowFlake;
+            GLfloat* triangleSnowFlake;
+            int pos;
 
         // Funcs
             GLfloat* createTriangle(GLfloat a, GLfloat cx, GLfloat cy);

@@ -28,6 +28,9 @@ namespace Snowflake {
         this->depth = 0;
         this->numPoints = 3 * pow(4, this->depth);
 
+		this->pos = 0;
+		this->triangleSnowFlake = new GLfloat(3 * pow(4, this->depth) * 3);
+
         this->create();
 	}
 
@@ -73,6 +76,11 @@ namespace Snowflake {
 		triangle[3] = ps[0] + dx/2 -dy/3;	triangle[4] = ps[1] + dy/2 + dx/3 ;	triangle[5] = -1; // pos 1
 
 		triangle[6] = ps[0] + dx/3 * 2;	triangle[7] = ps[1] + dy/3 * 2;	triangle[8] = -1; // pos 2
+
+		for (int i = 0; i < 9; i++) {
+			this->triangleSnowFlake[this->pos + i] = triangle[i];
+		}
+		this->pos += 9;
 
 		return triangle;
 	}
@@ -137,17 +145,37 @@ namespace Snowflake {
 			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], -this->posx, -this->posy);
 			rotatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], angle);
 			translatePoint(&this->snowFlake[i * 3], &this->snowFlake[i * 3 + 1], this->posx, this->posy);
+
+			translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], -this->posx, -this->posy);
+			rotatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], angle);
+			translatePoint(&this->triangleSnowFlake[i * 3], &this->triangleSnowFlake[i * 3 + 1], this->posx, this->posy);
 		}
 	}
 
 	void SnowflakeObj::create(){
+		delete[] this->triangleSnowFlake;
+		int numFloats = 3 * pow(4, depth) * 3;
+		
+		this->triangleSnowFlake = new GLfloat[numFloats];
+		this->pos = 0;
 		GLfloat* triangle = createTriangle(this->size, this->posx, this->posy);
 		GLfloat* points = calcSnowflake(triangle, 3, this->depth);
+
+		for (int i = 0; i < 9; i++) {
+			this->triangleSnowFlake[this->pos + i] = triangle[i];
+		}
+		this->pos += 9;
+
 		delete[] triangle;
 
         this->snowFlake = points;
 
 		rotateSnowflake(this->angle);
+
+		// std::cout << this->numPoints * 3;
+		// std::cout << "\n";
+		// std::cout << this->pos;
+		// std::cout << "\n";
 
 		// for (int i = 0; i < this->numPoints; i++) {
 		// 	std::cout << this->snowFlake[i * 3 + 0];
@@ -266,6 +294,10 @@ namespace Snowflake {
 
     GLfloat* SnowflakeObj::getSnowFlake() {
         return this->snowFlake;
+    }
+
+	GLfloat* SnowflakeObj::getTriangleSnowFlake() {
+        return this->triangleSnowFlake;
     }
 
 } // namespace Snowflake

@@ -138,7 +138,7 @@ namespace Snowflake {
 			this->snowFlake.setDepth(this->slider->getValue());
 		}
 		GLfloat* t_buf1 = this->snowFlake.getSnowFlake();
-		GLfloat* t_buf2 = this->snowFlake.calcTriangleSnowflake(t_buf1, this->snowFlake.getDepth());
+		GLfloat* t_buf2 = this->snowFlake.getTriangleSnowFlake();
 
 		int numFloats = this->snowFlake.getNumPoints() * 7;
 		GLfloat buf[numFloats * 2 + 56];
@@ -154,7 +154,7 @@ namespace Snowflake {
 			buf[6 + i * 7] = 1;
 		}
 
-		delete[] t_buf2;
+		// delete[] t_buf2;
 
 		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
 			buf[i * 7 + numFloats] = t_buf1[i * 3];
