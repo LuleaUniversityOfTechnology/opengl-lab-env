@@ -26,6 +26,8 @@ namespace Snowflake {
 		private:
 			Slider* slider;
 
+			GLfloat* rotateMatrix;
+
 			GLuint program;
 			GLuint vertexShader;
 			GLuint pixelShader;

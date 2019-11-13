@@ -50,7 +50,7 @@ namespace Snowflake {
 	/**
 	*/
 	SnowflakeApp::SnowflakeApp() {
-		//  Empty;
+		this->rotateMatrix = new GLfloat[16];
 	}
 
 	//------------------------------------------------------------------------------
@@ -58,6 +58,7 @@ namespace Snowflake {
 	*/
 	SnowflakeApp::~SnowflakeApp() {
 		this->snowFlake.~SnowflakeObj();
+		delete[] this->rotateMatrix;
 	}
 
 	//------------------------------------------------------------------------------
@@ -136,6 +137,19 @@ namespace Snowflake {
 
 	void SnowflakeApp::updateBuffer() {
 		this->snowFlake.setAngle(this->snowFlake.getAngle() + 0.001f);
+		
+		float angle = this->snowFlake.getAngle();
+		GLfloat* rotate = new GLfloat[16];
+		rotate[0] = (GLfloat)cosf(angle * M_PI);	rotate[1] = (GLfloat)-sin(angle * M_PI);	rotate[2] = 0;		rotate[3] = 0;
+		rotate[4] = (GLfloat)sin(angle * M_PI);		rotate[5] = (GLfloat)cos(angle * M_PI);		rotate[6] = 0;		rotate[7] = 0;
+		rotate[8] = 0;								rotate[9] = 0;								rotate[10] = 1.0f;	rotate[11] = 0;
+		rotate[12] = 0;								rotate[13] = 0;								rotate[14] = 0;		rotate[15] = 1.0f;
+		
+
+		delete[] this->rotateMatrix;
+		this->rotateMatrix = rotate;
+
+
 		if (this->slider->getNewValue()) {
 			this->snowFlake.setDepth(this->slider->getValue());
 		}
@@ -213,15 +227,7 @@ namespace Snowflake {
 				0,		0,		0,		1.0f
 			};
 
-			float angle = this->snowFlake.getAngle();
-			GLfloat rotate[] = {
-				cos(angle * M_PI),		-sin(angle * M_PI),		0,		0,
-				sin(angle * M_PI),		cos(angle * M_PI),		0,		0,
-				0,						0,						1.0f,	0,
-				0,						0,						0,		1.0f
-			};
-			// *px = x * cos(angle * M_PI) - y * sin(angle * M_PI);
-			// *py = x * sin(angle * M_PI) + y * cos(angle * M_PI);
+			
 
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -231,7 +237,7 @@ namespace Snowflake {
 			glEnableVertexAttribArray(1);
 
 			GLuint MatrixID = glGetUniformLocation(this->program, "rotate");
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, rotate);
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, this->rotateMatrix);
 
 			
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
