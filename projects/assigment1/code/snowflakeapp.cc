@@ -51,6 +51,13 @@ namespace Snowflake {
 	*/
 	SnowflakeApp::SnowflakeApp() {
 		this->rotateMatrix = new GLfloat[16];
+		
+		GLfloat* matrix = new GLfloat[16];
+		matrix[0] = 1.0f;	matrix[1] = 0;		matrix[2] = 0;		matrix[3] = 0;
+		matrix[4] = 0;		matrix[5] = 1.0f;	matrix[6] = 0;		matrix[7] = 0;
+		matrix[8] = 0;		matrix[9] = 0;		matrix[10] = 1.0f;	matrix[11] = 0;
+		matrix[12] = 0;		matrix[13] = 0;		matrix[14] = 0;		matrix[15] = 1.0f;
+		this->normalMatrix = matrix;
 	}
 
 	//------------------------------------------------------------------------------
@@ -59,6 +66,7 @@ namespace Snowflake {
 	SnowflakeApp::~SnowflakeApp() {
 		this->snowFlake.~SnowflakeObj();
 		delete[] this->rotateMatrix;
+		delete[] this->normalMatrix;
 	}
 
 	//------------------------------------------------------------------------------
@@ -136,8 +144,13 @@ namespace Snowflake {
 	}
 
 	void SnowflakeApp::updateBuffer() {
+		if (this->slider->getNewValue()) {
+			this->snowFlake.setDepth(this->slider->getValue());
+		}
+
+		//For rotating the snowflake.
 		this->snowFlake.setAngle(this->snowFlake.getAngle() + 0.001f);
-		
+
 		float angle = this->snowFlake.getAngle();
 		GLfloat* rotate = new GLfloat[16];
 		rotate[0] = (GLfloat)cosf(angle * M_PI);	rotate[1] = (GLfloat)-sin(angle * M_PI);	rotate[2] = 0;		rotate[3] = 0;
@@ -149,10 +162,6 @@ namespace Snowflake {
 		delete[] this->rotateMatrix;
 		this->rotateMatrix = rotate;
 
-
-		if (this->slider->getNewValue()) {
-			this->snowFlake.setDepth(this->slider->getValue());
-		}
 		GLfloat* t_buf1 = this->snowFlake.getSnowFlake();
 		GLfloat* t_buf2 = this->snowFlake.getTriangleSnowFlake();
 
@@ -219,17 +228,6 @@ namespace Snowflake {
 			updateBuffer();
 
 			// do stuff
-
-			GLfloat matrix[] = {
-				1.0f,	0,		0,		0,
-				0,		1.0f,	0,		0,
-				0,		0,		1.0f,	0,
-				0,		0,		0,		1.0f
-			};
-
-			
-
-
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
 			glUseProgram(this->program);
@@ -239,32 +237,22 @@ namespace Snowflake {
 			GLuint MatrixID = glGetUniformLocation(this->program, "rotate");
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, this->rotateMatrix);
 
-			
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_TRIANGLES, 0, this->snowFlake.getNumPoints());
-			// glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glLineWidth(4);
-			// glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
-			// glUseProgram(this->program);
-			// glEnableVertexAttribArray(0);
-			// glEnableVertexAttribArray(1);
+
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_POLYGON, this->snowFlake.getNumPoints(), this->snowFlake.getNumPoints());
-			// glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, this->normalMatrix);
 
-			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, matrix);
-
-			// glLineWidth(4);
-			// glBindBuffer(GL_ARRAY_BUFFER, this->vertex);
-			// glUseProgram(this->program);
-			// glEnableVertexAttribArray(0);
-			// glEnableVertexAttribArray(1);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_QUADS, this->snowFlake.getNumPoints() * 2, 8);

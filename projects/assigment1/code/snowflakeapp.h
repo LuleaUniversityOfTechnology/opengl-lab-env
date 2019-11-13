@@ -27,6 +27,7 @@ namespace Snowflake {
 			Slider* slider;
 
 			GLfloat* rotateMatrix;
+			GLfloat* normalMatrix;
 
 			GLuint program;
 			GLuint vertexShader;
