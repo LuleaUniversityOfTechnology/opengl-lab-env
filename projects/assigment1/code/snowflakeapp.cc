@@ -168,6 +168,7 @@ namespace Snowflake {
 		int numFloats = this->snowFlake.getNumPoints() * 7;
 		GLfloat buf[numFloats * 2 + 56];
 
+		// Add color to the snowflakes innside.
 		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
 			buf[i * 7] = t_buf2[i * 3];
 			buf[1 + i * 7] = t_buf2[1 + i * 3];
@@ -179,8 +180,7 @@ namespace Snowflake {
 			buf[6 + i * 7] = 1;
 		}
 
-		// delete[] t_buf2;
-
+		// Add color to the snowflakes outline.
 		for (int i = 0; i < this->snowFlake.getNumPoints(); i++) {
 			buf[i * 7 + numFloats] = t_buf1[i * 3];
 			buf[1 + i * 7 + numFloats] = t_buf1[1 + i * 3];
@@ -192,6 +192,7 @@ namespace Snowflake {
 			buf[6 + i * 7 + numFloats] = 1;
 		}
 
+		// Add color to the slider points.
 		GLfloat* t_buf3 = this->slider->getSliderVertex();
 		int blue = 1;
 		for (int i = 0; i < 8; i++) {
@@ -239,23 +240,21 @@ namespace Snowflake {
 
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
 			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
+			
+			
 			glDrawArrays(GL_TRIANGLES, 0, this->snowFlake.getNumPoints());
 
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glLineWidth(4);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_POLYGON, this->snowFlake.getNumPoints(), this->snowFlake.getNumPoints());
 
 
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glUniformMatrix4fv(MatrixID, 1, GL_FALSE, this->normalMatrix);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
 			glDrawArrays(GL_QUADS, this->snowFlake.getNumPoints() * 2, 8);
+
+			// Unbind buffer
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
