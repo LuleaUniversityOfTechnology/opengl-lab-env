@@ -49,7 +49,7 @@ namespace Snowflake {
 
 		GLfloat* triangle = new GLfloat[9];
 
-		triangle[0] =  0- a/2;	triangle[1] = 0 - r;	triangle[2] = -1; // pos 0
+		triangle[0] =  0 - a/2;	triangle[1] = 0 - r;	triangle[2] = -1; // pos 0
 
 		triangle[3] = 0;	triangle[4] = 0 + (h - r);	triangle[5] = -1; // pos 1
 
