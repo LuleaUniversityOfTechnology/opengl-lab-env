@@ -37,6 +37,6 @@ namespace Triangulation3d {
             points[0 + i * 2] = x;
             points[1 + i * 2] = y;
         }
-        return NULL;
+        return points;
     }
 }
