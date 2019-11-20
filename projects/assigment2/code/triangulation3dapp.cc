@@ -114,11 +114,11 @@ namespace Triangulation3d {
 
             this->updateBuf();
 
-            // // set ui rendering function
-            // this->window->SetUiRender([this]()
-            // {
-            //     this->RenderUI();
-            // });
+            // set ui rendering function
+            this->window->SetUiRender([this]()
+            {
+                this->RenderUI();
+            });
             
             return true;
         }
@@ -165,14 +165,20 @@ namespace Triangulation3d {
             this->buf[5 + i * 7] = 0;
             this->buf[6 + i * 7] = 1;
         }
+
+        // setup vbo
+		glGenBuffers(1, &this->triangle);
+		glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->bufLength, this->buf, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void Triangulation3dApp::RenderUI() {
-        // if (this->window->IsOpen()) {
-        //     ImGui::Begin("Demo window");
-        //     ImGui::Button("Hello!");
-        //     ImGui::End();
-	    // }
+        if (this->window->IsOpen()) {
+            ImGui::Begin("Demo window");
+            ImGui::Button("Hello!");
+            ImGui::End();
+	    }
     }
 
 }
