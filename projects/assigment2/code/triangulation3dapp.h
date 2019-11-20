@@ -31,6 +31,12 @@ namespace Triangulation3d {
 			GLuint triangle;
 			Display::Window* window;
 
+			GLint vsBufferLength;
+			GLchar *vsBuffer;
+			GLint fsBufferLength;
+			GLchar *fsBuffer;
+			// std::string compilerLog;
+
 			int bufLength;
             GLfloat* buf;
 
@@ -38,7 +44,7 @@ namespace Triangulation3d {
 
 			// Funcs
 			void updateBuf();
-			
+			void RenderUI();
 
 	};
 } // namespace Triangulation3d

@@ -82,8 +82,8 @@ ImGuiExampleApp::Open()
 		this->fsBuffer = new GLchar[STRING_BUFFER_SIZE];
 
 		// copy the hardcoded shader into buffer
-		strncpy_s(this->vsBuffer, STRING_BUFFER_SIZE, vs, STRING_BUFFER_SIZE);
-		strncpy_s(this->fsBuffer, STRING_BUFFER_SIZE, ps, STRING_BUFFER_SIZE);
+		strncpy(this->vsBuffer, vs, STRING_BUFFER_SIZE);
+		strncpy(this->fsBuffer, ps, STRING_BUFFER_SIZE);
 
 		// compile the shaders in the buffers
 		this->CompileShaders();

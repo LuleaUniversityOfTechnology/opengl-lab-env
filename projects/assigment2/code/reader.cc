@@ -5,13 +5,18 @@
 
 namespace Triangulation3d {
 
-
+    /**
+     *  Creates a reader with no read points 
+     */
     Reader::Reader() {
         this->pointsLength = 0;
         this->points = new GLfloat[this->pointsLength];
     }
 
 
+    /**
+     *  Deletes all values made by this class. 
+     */
     Reader::~Reader() {
         delete[] this->points;
     }

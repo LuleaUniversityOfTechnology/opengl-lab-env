@@ -32,15 +32,15 @@ const GLchar* ps =
 "}\n";
 
 namespace Triangulation3d {
-
     Triangulation3dApp::Triangulation3dApp() {
-        
         this->bufLength = 0;
         this->buf = new GLfloat[this->bufLength];
     }
     
     Triangulation3dApp::~Triangulation3dApp() {
         delete[] this->buf;
+        delete[] this->vsBuffer;
+        delete[] this->fsBuffer;
     }
 
     bool Triangulation3dApp::Open() {
@@ -58,8 +58,12 @@ namespace Triangulation3d {
 
             // setup vertex shader
             this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            GLint length = (GLint)std::strlen(vs);
-            glShaderSource(this->vertexShader, 1, &vs, &length);
+            this->vsBufferLength = (GLint)std::strlen(vs);
+            this->vsBuffer = new GLchar[this->vsBufferLength];
+            for (int i = 0; i < this->vsBufferLength; i++) {
+                this->vsBuffer[i] = vs[i];
+            }
+            glShaderSource(this->vertexShader, 1, &this->vsBuffer, &this->vsBufferLength);
             glCompileShader(this->vertexShader);
 
             // get error log
@@ -75,8 +79,12 @@ namespace Triangulation3d {
 
             // setup pixel shader
             this->pixelShader = glCreateShader(GL_FRAGMENT_SHADER);
-            length = (GLint)std::strlen(ps);
-            glShaderSource(this->pixelShader, 1, &ps, &length);
+            this->fsBufferLength = (GLint)std::strlen(ps);
+            this->fsBuffer = new GLchar[this->fsBufferLength];
+            for (int i = 0; i < this->fsBufferLength; i++) {
+                this->fsBuffer[i] = ps[i];
+            }
+            glShaderSource(this->pixelShader, 1, &this->fsBuffer, &this->fsBufferLength);
             glCompileShader(this->pixelShader);
 
             // get error log
@@ -108,6 +116,7 @@ namespace Triangulation3d {
         }
         return false;
     }
+
 
     void Triangulation3dApp::Run() {
        while (this->window->IsOpen()) {
@@ -157,4 +166,9 @@ namespace Triangulation3d {
         glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->bufLength, this->buf, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+
+    void Triangulation3dApp::RenderUI() {
+
+    }
+
 }
