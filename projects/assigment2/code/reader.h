@@ -14,12 +14,14 @@ namespace Triangulation3d {
 
 
             // funcs
-            GLfloat* readPoints(std::string file_path);
-
+            void readPoints(std::string file_path);
+			int getPointsLength();
+			GLfloat* getPoints();
 
 		private:
             // Var
-
+			int pointsLength;
+			GLfloat* points;
 
             // Funcs
             

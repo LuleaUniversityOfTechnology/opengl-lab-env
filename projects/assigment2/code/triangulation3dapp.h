@@ -2,6 +2,7 @@
 
 #include "core/app.h"
 #include "render/window.h"
+#include "reader.h"
 
 namespace Triangulation3d {
 	class Triangulation3dApp : public Core::App {
@@ -23,15 +24,21 @@ namespace Triangulation3d {
 
 
 		private:
-        // Var
-        GLuint program;
-		GLuint vertexShader;
-		GLuint pixelShader;
-		GLuint triangle;
-		Display::Window* window;
+			// Var
+			GLuint program;
+			GLuint vertexShader;
+			GLuint pixelShader;
+			GLuint triangle;
+			Display::Window* window;
 
-        // Funcs
-            
+			int bufLength;
+            GLfloat* buf;
+
+			Triangulation3d::Reader reader;
+
+			// Funcs
+			void updateBuf();
+			
 
 	};
 } // namespace Triangulation3d

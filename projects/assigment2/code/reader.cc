@@ -5,38 +5,57 @@
 
 namespace Triangulation3d {
 
+
     Reader::Reader() {
-        //empty
+        this->pointsLength = 0;
+        this->points = new GLfloat[this->pointsLength];
     }
-    
+
+
     Reader::~Reader() {
-        //empty
+        delete[] this->points;
     }
+
 
     /**
-     *  Reads points from file.
+     *  Reads points from file and updates the class variables with the read data.
      *  file_path: is the path to the file.
-     *  Note: Delete return value when done to avoid memory leaks.
      */
-    GLfloat* Reader::readPoints(std::string file_path) {
+    void Reader::readPoints(std::string file_path) {
         std::ifstream infile(file_path);
-        int length;
-        infile >> length;
-        std::cout << length;
-        std::cout << "\n";
+        int numCords;
+        infile >> numCords;
+        // std::cout << numCords;
+        // std::cout << "\n";
+        this->pointsLength = numCords * 2;
+        delete[] this->points;
+        this->points = new GLfloat[this->pointsLength];
 
-        GLfloat* points = new GLfloat[length * 2];
-
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < numCords; i++) {
             GLfloat x, y;
             infile >> x >> y;
-            std::cout << x;
-            std::cout << " ";
-            std::cout << y;
-            std::cout << "\n";
-            points[0 + i * 2] = x;
-            points[1 + i * 2] = y;
+            // std::cout << x;
+            // std::cout << " ";
+            // std::cout << y;
+            // std::cout << "\n";
+            this->points[0 + i * 2] = x;
+            this->points[1 + i * 2] = y;
         }
-        return points;
+    }
+
+
+    /**
+     *  Gets the length of the points array.
+     */
+    int Reader::getPointsLength() {
+        return this->pointsLength;
+    }
+
+
+    /**
+     *  Gets a pointer to the array with read points. 
+     */
+    GLfloat* Reader::getPoints() {
+        return this->points;
     }
 }

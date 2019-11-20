@@ -8,7 +8,6 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <math.h>
 #include <iostream>
-#include "reader.h"
 
 const GLchar* vs =
 "#version 310 es\n"
@@ -35,11 +34,13 @@ const GLchar* ps =
 namespace Triangulation3d {
 
     Triangulation3dApp::Triangulation3dApp() {
-
+        
+        this->bufLength = 0;
+        this->buf = new GLfloat[this->bufLength];
     }
     
     Triangulation3dApp::~Triangulation3dApp() {
-        
+        delete[] this->buf;
     }
 
     bool Triangulation3dApp::Open() {
@@ -49,30 +50,6 @@ namespace Triangulation3d {
         {
             this->window->Close();
         });
-
-        Reader r;
-        GLfloat* t_buf = r.readPoints("/home/niklas/Desktop/D7045E/assigments/opengl-lab-env/projects/assigment2/code/test.txt");
-
-        GLfloat buf[] =
-        {
-            -0.5f,	-0.5f,	-1,			// pos 0
-            1,		0,		0,		1,	// color 0
-            0,		0.5f,	-1,			// pos 1
-            0,		1,		0,		1,	// color 0
-            0.5f,	-0.5f,	-1,			// pos 2
-            0,		0,		1,		1	// color 0
-        };
-
-        buf[0] = t_buf[0];
-        buf[1] = t_buf[1];
-
-        buf[7] = t_buf[2];
-        buf[8] = t_buf[3];
-
-        buf[14] = t_buf[4];
-        buf[15] = t_buf[5];
-
-        delete[] t_buf;
 
         if (this->window->Open())
         {
@@ -126,12 +103,7 @@ namespace Triangulation3d {
                 printf("[PROGRAM LINK ERROR]: %s", buf);
                 delete[] buf;
             }
-
-            // setup vbo
-            glGenBuffers(1, &this->triangle);
-            glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(buf), buf, GL_STATIC_DRAW);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            
             return true;
         }
         return false;
@@ -143,16 +115,46 @@ namespace Triangulation3d {
             this->window->Update();
 
             // do stuff
+            this->updateBuf();
+
             glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
             glUseProgram(this->program);
             glEnableVertexAttribArray(0);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, NULL);
             glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(float32) * 7, (GLvoid*)(sizeof(float32) * 3));
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawArrays(GL_TRIANGLES, 0, this->bufLength/7);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             this->window->SwapBuffers();
         }
+    }
+
+
+    void Triangulation3dApp::updateBuf() {
+        this->reader.readPoints("/home/niklas/Desktop/D7045E/assigments/opengl-lab-env/projects/assigment2/code/test.txt");
+        int numCords = this->reader.getPointsLength()/2;
+        GLfloat* tBuf = this->reader.getPoints();
+
+        delete[] this->buf;
+        this->bufLength = numCords * 7;
+        this->buf = new GLfloat[bufLength];
+
+        for (int i = 0; i < numCords; i++) {
+            this->buf[0 + i * 7] = tBuf[0 + i * 2];
+            this->buf[1 + i * 7] = tBuf[1 + i * 2];
+            this->buf[2 + i * 7] = -1;
+
+            this->buf[3 + i * 7] = 1;
+            this->buf[4 + i * 7] = 0;
+            this->buf[5 + i * 7] = 0;
+            this->buf[6 + i * 7] = 1;
+        }
+
+        // setup vbo
+        glGenBuffers(1, &this->triangle);
+        glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->bufLength, this->buf, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
