@@ -112,7 +112,7 @@ namespace Triangulation3d {
                 delete[] buf;
             }
 
-            this->updateBuf();
+            this->updateBuf("/home/niklas/Desktop/D7045E/assigments/opengl-lab-env/projects/assigment2/code/test1.txt");
 
             // set ui rendering function
             this->window->SetUiRender([this]()
@@ -146,8 +146,8 @@ namespace Triangulation3d {
     }
 
 
-    void Triangulation3dApp::updateBuf() {
-        this->reader.readPoints("/home/niklas/Desktop/D7045E/assigments/opengl-lab-env/projects/assigment2/code/test.txt");
+    void Triangulation3dApp::updateBuf(char* filePath) {
+        this->reader.readPoints(filePath);
         int numCords = this->reader.getPointsLength()/2;
         GLfloat* tBuf = this->reader.getPoints();
 
@@ -175,9 +175,15 @@ namespace Triangulation3d {
 
     void Triangulation3dApp::RenderUI() {
         if (this->window->IsOpen()) {
+            char* filePath = new char[100];
             ImGui::Begin("Demo window");
-            ImGui::Button("Hello!");
+            ImGui::InputText("string", filePath, IM_ARRAYSIZE(filePath));
+            if (ImGui::Button("Read file")) {
+                this->updateBuf(filePath);
+            }
             ImGui::End();
+
+            delete[] filePath;
 	    }
     }
 
