@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <GL/glew.h>
 
 namespace Triangulation3d {
 

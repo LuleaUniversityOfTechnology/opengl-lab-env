@@ -9,6 +9,8 @@
 #include <math.h>
 #include <iostream>
 
+#include "imgui.h"
+
 const GLchar* vs =
 "#version 310 es\n"
 "precision mediump float;\n"
@@ -46,13 +48,11 @@ namespace Triangulation3d {
     bool Triangulation3dApp::Open() {
         App::Open();
         this->window = new Display::Window;
-        window->SetKeyPressFunction([this](int32, int32, int32, int32)
-        {
+        window->SetKeyPressFunction([this](int32 a, int32 b, int32 c, int32 d) {
             this->window->Close();
         });
 
-        if (this->window->Open())
-        {
+        if (this->window->Open()) {
             // set clear color to gray
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
@@ -111,6 +111,14 @@ namespace Triangulation3d {
                 printf("[PROGRAM LINK ERROR]: %s", buf);
                 delete[] buf;
             }
+
+            this->updateBuf();
+
+            // // set ui rendering function
+            // this->window->SetUiRender([this]()
+            // {
+            //     this->RenderUI();
+            // });
             
             return true;
         }
@@ -124,8 +132,6 @@ namespace Triangulation3d {
             this->window->Update();
 
             // do stuff
-            this->updateBuf();
-
             glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
             glUseProgram(this->program);
             glEnableVertexAttribArray(0);
@@ -159,16 +165,14 @@ namespace Triangulation3d {
             this->buf[5 + i * 7] = 0;
             this->buf[6 + i * 7] = 1;
         }
-
-        // setup vbo
-        glGenBuffers(1, &this->triangle);
-        glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * this->bufLength, this->buf, GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void Triangulation3dApp::RenderUI() {
-
+        // if (this->window->IsOpen()) {
+        //     ImGui::Begin("Demo window");
+        //     ImGui::Button("Hello!");
+        //     ImGui::End();
+	    // }
     }
 
 }

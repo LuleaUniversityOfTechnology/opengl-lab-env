@@ -1,8 +1,8 @@
-#include "core/app.h"
 #include <string>
+#include <GL/glew.h>
 
 namespace Triangulation3d {
-	class Reader : public Core::App {
+	class Reader {
 		public:
 			// constructor
 			Reader();
