@@ -11,6 +11,7 @@
 
 const GLchar* vs =
 "#version 310 es\n"
+"precision mediump float;\n"
 "layout(location=0) in vec3 pos;\n"
 "layout(location=1) in vec4 color;\n"
 "layout(location=0) out vec4 Color;\n"
@@ -22,6 +23,7 @@ const GLchar* vs =
 
 const GLchar* ps =
 "#version 310 es\n"
+"precision mediump float;\n"
 "layout(location=0) in vec4 color;\n"
 "out vec4 Color;\n"
 "void main()\n"
@@ -82,8 +84,14 @@ ImGuiExampleApp::Open()
 		this->fsBuffer = new GLchar[STRING_BUFFER_SIZE];
 
 		// copy the hardcoded shader into buffer
+
+#ifdef _WIN32
 		strncpy_s(this->vsBuffer, STRING_BUFFER_SIZE, vs, STRING_BUFFER_SIZE);
 		strncpy_s(this->fsBuffer, STRING_BUFFER_SIZE, ps, STRING_BUFFER_SIZE);
+#else
+		strncpy(this->vsBuffer, vs, STRING_BUFFER_SIZE);
+		strncpy(this->fsBuffer, ps, STRING_BUFFER_SIZE);
+#endif
 
 		// compile the shaders in the buffers
 		this->CompileShaders();
