@@ -2,7 +2,7 @@
 C++11 and OpenGL based application base for developing apps.
 
 # Requirements
-1. Visual Studio 2017 or newer (Windows) or CMake 3+ (Linux).
+1. Visual Studio 2017 or newer (Windows) or CMake 3+ (Linux, MacOS).
 2. Compiler with support for lambda functions (C++11), such as VS 2017.
   
 # Visual Studio Users
@@ -10,6 +10,11 @@ C++11 and OpenGL based application base for developing apps.
 2. Work either in the example app project, or create a new project with the same settings as example app.
 
 GLM math library is included by default in the example app project.
+
+# CMake Users
+1. Configure and Generate project by using either a CMake GUI tool, or by executing `cmake -S {PATH_TO_SOURCE_ROOT} -B {PATH_TO_BUILD_FOLDER}`. Select Generator based on your preferences.
+2. Build project by using the generated project files (`make` from the build folder if you are using Unix Makefiles)
+3. Executables will be placed in the `bin` folder
 
 # Usage
 The lab environment contains two classes, Window and App. Override the App class for your project to implement your own update loop. The Window class is used to open a window and connect input handlers to it. 
