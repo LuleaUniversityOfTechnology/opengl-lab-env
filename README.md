@@ -12,8 +12,8 @@ C++11 and OpenGL based application base for developing apps.
 GLM math library is included by default in the example app project.
 
 # CMake Users
-1. Configure and Generate project by using either a CMake GUI tool, or by executing `cmake -S {PATH_TO_SOURCE_ROOT} -B {PATH_TO_BUILD_FOLDER}`. Select Generator based on your preferences.
-2. Build project by using the generated project files (`make` from the build folder if you are using Unix Makefiles)
+1. Configure and Generate project by using either a CMake GUI tool, or by executing `cmake -S {PATH_TO_SOURCE_ROOT} -B {PATH_TO_BUILD_FOLDER}`. Select Generator based on your preferences. Add `-DCMAKE_BUILD_TYPE=Debug` if you intend to debug your application.
+2. Build project by using the generated project files (`make` from the build folder if you are using Unix Makefiles (default unless otherwise specified))
 3. Executables will be placed in the `bin` folder
 
 # Usage
