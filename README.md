@@ -13,6 +13,7 @@ GLM math library is included by default in the example app project.
 
 # CMake Users
 1. Configure and Generate project by using either a CMake GUI tool, or by executing `cmake -S {PATH_TO_SOURCE_ROOT} -B {PATH_TO_BUILD_FOLDER}`. Select Generator based on your preferences. Add `-DCMAKE_BUILD_TYPE=Debug` if you intend to debug your application.
+    * Make sure you generate everything by calling cmake from the root directory of the repository (`opengl-lab-env/`).
 2. Build project by using the generated project files (`make` from the build folder if you are using Unix Makefiles (default unless otherwise specified))
 3. Executables will be placed in the `bin` folder
 
@@ -24,6 +25,9 @@ This is done by assigning a lambda function to a callback matching the input you
 ## Common problems
 * Q: Build log says Windows SDK version was not found
     - A: Right click the project in the solution explorer and click `Retarget projects`, then select a version.
+* Q: Running CMake on Linux says some libraries are missing
+    - A: Try installing them with `sudo apt-get install libgl1-mesa-dev mesa-common-dev xorg-dev libglu1-mesa-dev` or equivalent for your distribution.
+
 
 ---
 ---
